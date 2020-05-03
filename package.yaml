@@ -1,8 +1,8 @@
-name:                simple-http
+name:                adhoc-http
 version:             0.1.0.0
 #synopsis:
 #description:
-homepage:            https://github.com/luntain/simple-http#readme
+homepage:            https://github.com/luntain/adhoc-http#readme
 license:             BSD3
 author:              Kamil Dworakowski
 maintainer:          kamil@dworakowski.name
