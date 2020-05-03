@@ -19,8 +19,9 @@ dependencies:
   - uuid
   - bytestring
   - containers
+  - optparse-applicative
 
 executables:
-  simple-http:
+  adhoc-http:
     source-dirs:      src
     main:             Main.hs
