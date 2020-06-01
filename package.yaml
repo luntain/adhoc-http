@@ -20,6 +20,7 @@ dependencies:
   - bytestring
   - containers
   - optparse-applicative
+  - hostname
 
 executables:
   adhoc-http:

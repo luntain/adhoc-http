@@ -1,3 +1,4 @@
+{-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module Main where
@@ -5,21 +6,27 @@ module Main where
 import qualified Data.ByteString.Char8 as B
 import qualified Data.Set as Set
 import qualified Data.UUID as UUID
-import Options.Applicative
+import Options.Applicative as Opt
 import Snap.Core
 import Snap.Http.Server
 import Snap.Util.FileServe
 import Snap.Util.GZip
 import System.Environment (getArgs)
 import System.Random
+import Data.String (IsString(fromString))
+import Network.HostName
 
 main :: IO ()
 main = do
-  (port, dirToServe) <- execParser cliParser
-  uuid <- UUID.toASCIIBytes <$> randomIO
+  Run{..} <- execParser cliParser
+  uuid <-
+    case pathPrefix of
+      Nothing -> UUID.toASCIIBytes <$> randomIO
+      Just prefix -> pure prefix
   let conf = config port
   print conf
-  putStrLn $ "serving on: " ++ "http://localhost:" ++ show port ++ "/" ++ B.unpack uuid ++ "/"
+  hostName <- getHostName
+  putStrLn $ "Serving files on: " ++ "http://" ++ hostName ++ ":" ++ show port ++ "/" ++ B.unpack uuid ++ "/"
   httpServe conf
     . withCompression' (Set.insert "text/csv" compressibleMimeTypes)
     . dir uuid
@@ -33,16 +40,17 @@ main = do
 
 cliParser =
   info
-    (helper <*> options)
+    (options <**> helper)
     ( fullDesc
         <> header "Ad-hoc HTTP file server" -- I have no idea where or when it displays
-        <> progDesc "Serve a directory under a randomly generated GUID"
+        <> progDesc "Serve a directory under a randomly generated GUID or a specified path"
     )
 
-options :: Parser (Port, FilePath)
+options :: Parser Cmd
 options =
-  (,)
+  Run
     <$> option auto (long "port" <> short 'p' <> value 7878 <> showDefault <> metavar "INT")
-    <*> argument str (metavar "DIR" <> help "The directory to serve")
+    <*> optional (Opt.option str (long "path-prefix" <> metavar "URL_PATH" <> help "Path prefix (random GUID by default)"))
+    <*> argument str (metavar "DIR" <> help "The directories to serve")
 
-type Port = Int
+data Cmd = Run { port :: Int, pathPrefix :: Maybe B.ByteString, dirToServe :: FilePath }
