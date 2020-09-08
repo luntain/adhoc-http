@@ -1,8 +1,8 @@
-name:                adhoc-http
+name:                adhoc-serve
 version:             0.1.0.0
-#synopsis:
-#description:
-homepage:            https://github.com/luntain/adhoc-http#readme
+synopsis:            Serve files from a directory
+description:         A command line program to quickly create an http server for serving files from one or more directories on a local disk.
+homepage:            https://github.com/luntain/adhoc-serve#readme
 license:             BSD3
 author:              Kamil Dworakowski
 maintainer:          kamil@dworakowski.name
@@ -13,6 +13,7 @@ extra-source-files:
 
 dependencies:
   - base >= 4.7 && < 5
+  - text
   - snap-core
   - snap-server
   - random
@@ -23,6 +24,6 @@ dependencies:
   - hostname
 
 executables:
-  adhoc-http:
+  adhoc-serve:
     source-dirs:      src
     main:             Main.hs
