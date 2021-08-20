@@ -8,17 +8,14 @@ module Main where
 import qualified Data.ByteString.Char8 as B
 import qualified Data.Set as Set
 import qualified Data.UUID as UUID
-import Data.List (break)
 import Options.Applicative as Opt
 import Snap.Core
 import Snap.Http.Server
 import Snap.Util.FileServe
 import Snap.Util.GZip
-import System.Environment (getArgs)
 import System.Random
 import Data.String (IsString(fromString))
 import Network.HostName
-import Data.Text (Text)
 import Control.Monad (forM)
 import Data.Foldable (msum)
 
@@ -60,7 +57,7 @@ cliParser =
   info
     (options <**> helper)
     ( fullDesc
-        <> header "Ad-hoc HTTP file server" -- I have no idea where or when it displays
+        <> header "Ad-hoc HTTP file server"
         <> progDesc "Serve a directory under a randomly generated GUID or a specified path"
     )
 
