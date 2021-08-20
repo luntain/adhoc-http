@@ -28,6 +28,7 @@ main = do
     (path,) <$> maybe randomGuid pure mprefix
 
   hSetBuffering stdout LineBuffering -- so that stdout makes for good logging
+  putStrLn "adhoc-serve Version 0.1.1.0"
 
   let conf = config port
   print conf
