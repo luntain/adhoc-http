@@ -19,12 +19,15 @@ import Network.HostName
 import Control.Monad (forM)
 import Data.Foldable (msum)
 import Control.Arrow (second)
+import System.IO
 
 main :: IO ()
 main = do
   Run { port, dirsToServe } <- execParser cliParser
   dirsToServe' :: [(FilePath, [B.ByteString])] <- (fmap.map) (second (B.split '/')) . forM dirsToServe $ \(DirToServe path mprefix) ->
     (path,) <$> maybe randomGuid pure mprefix
+
+  hSetBuffering stdout LineBuffering -- so that stdout makes for good logging
 
   let conf = config port
   print conf
