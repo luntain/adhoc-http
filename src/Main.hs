@@ -18,11 +18,12 @@ import Data.String (IsString(fromString))
 import Network.HostName
 import Control.Monad (forM)
 import Data.Foldable (msum)
+import Control.Arrow (second)
 
 main :: IO ()
 main = do
   Run { port, dirsToServe } <- execParser cliParser
-  dirsToServe' :: [(FilePath, B.ByteString)] <- forM dirsToServe $ \(DirToServe path mprefix) ->
+  dirsToServe' :: [(FilePath, [B.ByteString])] <- (fmap.map) (second (B.split '/')) . forM dirsToServe $ \(DirToServe path mprefix) ->
     (path,) <$> maybe randomGuid pure mprefix
 
   let conf = config port
@@ -33,14 +34,14 @@ main = do
     else do
       putStrLn $ "Serving following dirs:"
       forM dirsToServe' $ \(diskPath, prefix) -> do
-        putStrLn $ " * " ++ diskPath ++ " at " ++ "http://" ++ hostName ++ ":" ++ show port ++ "/" ++ B.unpack prefix ++ "/"
+        putStrLn $ " * " ++ diskPath ++ " at " ++ "http://" ++ hostName ++ ":" ++ show port ++ "/" ++ printPath prefix
 
       httpServe conf
         . withCompression' (Set.insert "text/csv" compressibleMimeTypes)
         . msum
         . flip map dirsToServe'
-        $ \(diskPath, prefix) -> dir prefix $ serveDirectoryWith fancyDirectoryConfig diskPath
-
+        $ \(diskPath, prefix) ->
+           foldr dir (serveDirectoryWith fancyDirectoryConfig diskPath) prefix
   where
     config port =
       setErrorLog ConfigNoLog
@@ -50,6 +51,10 @@ main = do
 
     randomGuid :: IO B.ByteString
     randomGuid = UUID.toASCIIBytes <$> randomIO
+
+    printPath :: [B.ByteString] -> String
+    printPath [] = ""
+    printPath (p:rest) = B.unpack p ++ "/" ++ printPath rest
 
 
 cliParser :: ParserInfo Cmd

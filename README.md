@@ -11,6 +11,13 @@ Example usage:
     Serving following dirs:
     * path/to/dir/one at http://organon.local:8080/4725de26-1722-43bc-9a5e-712ce574b7b1/
     * path/to/dir/two at http://organon.local:8080/Foo/
+    * path/to/dir/three at http://organon.local:8080/fiz/baz/
+
+Serve without prefix:
+
+    $ adhoc-serve -p 8080 path/to/dir:
+    Serving following dirs:
+    * path/to/dir at http://organon.local:8080/
 
 The server is based on Snap. Some files are served compressed, based
 on the file extension, determined by Snap defaults. I have modified the
