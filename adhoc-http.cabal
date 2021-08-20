@@ -1,0 +1,40 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.34.4.
+--
+-- see: https://github.com/sol/hpack
+
+name:           adhoc-http
+version:        0.1.1.0
+synopsis:       Serve files from a directory
+description:    A command line program to quickly create an http server for serving files from one or more directories on a local disk.
+category:       Web
+homepage:       https://github.com/luntain/adhoc-serve#readme
+author:         Kamil Dworakowski
+maintainer:     kamil@dworakowski.name
+copyright:      2020 Kamil Dworakowski
+license:        BSD3
+license-file:   LICENSE
+build-type:     Simple
+extra-source-files:
+    README.md
+    changelog.md
+
+executable adhoc-http
+  main-is: Main.hs
+  other-modules:
+      Paths_adhoc_http
+  hs-source-dirs:
+      src
+  build-depends:
+      base >=4.7 && <5
+    , bytestring
+    , containers
+    , hostname
+    , optparse-applicative
+    , random
+    , snap-core
+    , snap-server
+    , text
+    , uuid
+  default-language: Haskell2010

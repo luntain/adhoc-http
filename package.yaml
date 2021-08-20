@@ -1,4 +1,4 @@
-name:                adhoc-serve
+name:                adhoc-http
 version:             0.1.1.0
 synopsis:            Serve files from a directory
 description:         A command line program to quickly create an http server for serving files from one or more directories on a local disk.
@@ -25,6 +25,6 @@ dependencies:
   - hostname
 
 executables:
-  adhoc-serve:
+  adhoc-http:
     source-dirs:      src
     main:             Main.hs

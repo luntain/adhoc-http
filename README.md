@@ -1,4 +1,4 @@
-# adhoc-serve
+# adhoc-http
 
 A command line program to quickly create an http server serving files
 from one or more directories on a local disk. Each directory will be
@@ -6,7 +6,7 @@ avialable over http at a randomly generated guid or the specified prefix.
 
 Example usage:
 
-    $ adhoc-serve -p 8080 path/to/dir/one path/to/dir/two:Foo
+    $ adhoc-http -p 8080 path/to/dir/one path/to/dir/two:Foo
     ...
     Serving following dirs:
     * path/to/dir/one at http://organon.local:8080/4725de26-1722-43bc-9a5e-712ce574b7b1/
@@ -15,7 +15,7 @@ Example usage:
 
 Serve without prefix:
 
-    $ adhoc-serve -p 8080 path/to/dir:
+    $ adhoc-http -p 8080 path/to/dir:
     Serving following dirs:
     * path/to/dir at http://organon.local:8080/
 
