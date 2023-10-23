@@ -23,14 +23,14 @@ import System.IO
 
 main :: IO ()
 main = do
-  Run { port, dirsToServe } <- execParser cliParser
+  Run { port, dirsToServe, timeout } <- execParser cliParser
   dirsToServe' :: [(FilePath, [B.ByteString])] <- (fmap.map) (second (B.split '/')) . forM dirsToServe $ \(DirToServe path mprefix) ->
     (path,) <$> maybe randomGuid pure mprefix
 
   hSetBuffering stdout LineBuffering -- so that stdout makes for good logging
   putStrLn "adhoc-serve Version 0.1.1.0"
 
-  let conf = config port
+  let conf = config port timeout
   print conf
   hostName <- getHostName
 
@@ -47,10 +47,11 @@ main = do
         $ \(diskPath, prefix) ->
            foldr dir (serveDirectoryWith fancyDirectoryConfig diskPath) prefix
   where
-    config port =
+    config port timeout =
       setErrorLog ConfigNoLog
         . setAccessLog ConfigNoLog
         . setPort port
+        . setDefaultTimeout timeout
         $ defaultConfig
 
     randomGuid :: IO B.ByteString
@@ -75,6 +76,17 @@ options =
   Run
     <$> option auto (long "port" <> short 'p' <> value 7878 <> showDefault <> metavar "INT")
     <*> many dirToServe
+    <*> timeoutOption
+  where
+    timeoutOption = option auto
+       $ long "timeout"
+      <> short 't'
+      <> metavar "SECONDS"
+      <> value 60
+      <> showDefault
+      <> help timeoutOptionDesc
+    timeoutOptionDesc = "Incoming connection timeout [s] (adjust when serving"
+      ++ " large files or using slow network)"
 
 dirToServe :: Parser DirToServe
 dirToServe =
@@ -90,5 +102,5 @@ dirToServe =
         _ -> error "Impossible!"
 
 
-data Cmd = Run { port :: Int, dirsToServe :: [DirToServe]}
+data Cmd = Run { port :: Int, dirsToServe :: [DirToServe], timeout :: Int }
 data DirToServe = DirToServe { path :: FilePath, pathPrefix :: Maybe B.ByteString}
